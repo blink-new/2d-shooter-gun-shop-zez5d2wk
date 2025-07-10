@@ -1,47 +1,34 @@
-import React, { useState } from 'react'
-import Arena3D from './components/Arena3D'
-import GameUI from './components/GameUI'
+import React from 'react'
+import { GameProvider } from './contexts/GameContext'
+import Game from './components/Game'
+import Shop from './components/Shop'
+import { useGame } from './contexts/GameContext'
 
-export default function App() {
-  // Game state
-  const [hp, setHp] = useState(150)
-  const [weapon, setWeapon] = useState('sword')
-  const [skin, setSkin] = useState('classic')
-
-  // Demo: static enemies and warp points
-  const enemies = [
-    { position: [5, 1, 5], color: '#f00' },
-    { position: [-5, 1, 5], color: '#f00' },
-    { position: [5, 1, -5], color: '#f00' },
-    { position: [-5, 1, -5], color: '#f00' },
-    { position: [0, 1, 10], color: '#f00' },
-  ]
-  const warpPoints = [
-    [15, 0.25, 15],
-    [-15, 0.25, 15],
-    [15, 0.25, -15],
-    [-15, 0.25, -15],
-    [0, 0.25, 20],
-  ]
+function GameApp() {
+  const { showShop } = useGame()
 
   return (
-    <div style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden', background: '#000' }}>
-      <Arena3D
-        playerPos={[0, 1, 0]}
-        playerColor="#06c"
-        weaponType={weapon}
-        weaponSkin={skin}
-        enemies={enemies}
-        warpPoints={warpPoints}
-      />
-      <GameUI
-        hp={hp}
-        maxHp={150}
-        weapon={weapon}
-        skin={skin}
-        onWeaponChange={setWeapon}
-        onSkinChange={setSkin}
-      />
+    <div className="w-full h-screen bg-slate-900 relative overflow-hidden">
+      {showShop ? (
+        <div className="h-full flex">
+          <div className="w-1/2">
+            <Game />
+          </div>
+          <div className="w-1/2 bg-slate-800 border-l border-orange-500/30">
+            <Shop />
+          </div>
+        </div>
+      ) : (
+        <Game />
+      )}
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <GameProvider>
+      <GameApp />
+    </GameProvider>
   )
 }
